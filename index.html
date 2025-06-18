@@ -6,7 +6,145 @@
   <title>T-Shirts</title>
 </head>
 <body>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 4rem;
+      font-weight: bold;
+      margin: 2rem;
+      color: white;
+      text-align: left;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    #tshirt-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      padding: 0 2rem 2rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .tshirt-item {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .tshirt-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    }
+
+    .tshirt-item img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+      margin-bottom: 1rem;
+      border-radius: 10px;
+    }
+
+    .tshirt-item h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem 0;
+      color: #2c3e50;
+    }
+
+    .price {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 0 0 0.75rem 0;
+      color: #27ae60;
+    }
+
+    .stock {
+      font-size: 1.125rem;
+      font-weight: 500;
+      margin: 0 0 1rem 0;
+      color: #3498db;
+      background: rgba(52, 152, 219, 0.1);
+      padding: 0.3rem 0.8rem;
+      border-radius: 15px;
+      display: inline-block;
+    }
+
+    .out-of-stock {
+      color: #e74c3c !important;
+      background: rgba(231, 76, 60, 0.1) !important;
+    }
+
+    .purchase-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .purchase-controls select {
+      border: 2px solid #3498db;
+      background: white;
+      padding: 0.6rem 0.8rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      width: 70px;
+      color: #2c3e50;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    .purchase-controls select:focus {
+      border-color: #2980b9;
+    }
+
+    .purchase-controls button {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: white;
+      padding: 0.6rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+    }
+
+    .purchase-controls button:hover {
+      background: linear-gradient(135deg, #c0392b, #a93226);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+    }
+
+    .purchase-controls button:active {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      #tshirt-container {
+        grid-template-columns: 1fr;
+      }
+      
+      h1 {
+        font-size: 3rem;
+      }
+    }
+  </style>
+<body>
+  <h1>T-Shirts</h1>
+  <div id="tshirt-container"></div>
   
+  <script src="t-shirts.js"></script>
   
 </body>
 </html>
