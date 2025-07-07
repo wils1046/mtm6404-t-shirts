@@ -1,3 +1,6 @@
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+const App = () => {
 const tshirts = [
   {
     title: 'Blue T-Shirt',
@@ -64,55 +67,103 @@ const tshirts = [
   }
 ];
 
-const $container = document.getElementById('tshirt-container');
+ const getInitialTshirts = () => {
+    const savedTshirts = localStorage.getItem('tshirts');
+    return savedTshirts ? JSON.parse(savedTshirts) : tshirts;
+  };
 
-const buildTshirts = (tshirts) => {
-  const html = list(tshirts);
-  $container.innerHTML = html;
+  const [tshirtsState, setTshirts] = React.useState(getInitialTshirts());
+  const [selectedQuantities, setSelectedQuantities] = React.useState({});
+
+  React.useEffect(() => {
+    localStorage.setItem('tshirts', JSON.stringify(tshirtsState));
+  }, [tshirtsState]);
+
+  const handleQuantityChange = (index, quantity) => {
+    setSelectedQuantities({
+      ...selectedQuantities,
+      [index]: parseInt(quantity)
+    });
+  };
+
+  const handleBuyClick = (index) => {
+    const quantity = selectedQuantities[index] || 1;
+    
+    setTshirts(tshirtsState.map((tshirt, i) => {
+      if (i === index) {
+        return {
+          ...tshirt,
+          stock: tshirt.stock - quantity
+        };
+      }
+      return tshirt;
+    }));
+
+    setSelectedQuantities({
+      ...selectedQuantities,
+      [index]: 1
+    });
+  };
+
+  const createQuantityOptions = (stock) => {
+    const options = [];
+    for (let i = 1; i <= stock; i++) {
+      options.push(
+        <option key={i} value={i}>
+          {i}
+        </option>
+      );
+    }
+    return options;
+  };
+
+  return (
+    <div className="container">
+      <h1>T-Shirts</h1>
+      <div id="tshirt-container">
+        {tshirtsState.map((tshirt, index) => (
+          <div key={index} className="tshirt-item">
+            <img 
+              src={tshirt.image} 
+              alt={tshirt.title}
+              onError={(e) => {
+                console.log(`Failed to load image: ${tshirt.image}`);
+                e.target.style.backgroundColor = '#e5e5e5';
+                e.target.style.display = 'block';
+              }}
+            />
+            
+            <h2>{tshirt.title}</h2>
+            
+            <p className="price">$ {tshirt.price.toFixed(2)}</p>
+            
+            <div className={`stock ${tshirt.stock === 0 ? 'out-of-stock' : ''}`}>
+              {tshirt.stock === 0 ? (
+                <span>Out of stock</span>
+              ) : (
+                <span>{tshirt.stock} left!</span>
+              )}
+            </div>
+            
+            {tshirt.stock > 0 && (
+              <div className="purchase-controls">
+                <select
+                  value={selectedQuantities[index] || 1}
+                  onChange={(e) => handleQuantityChange(index, e.target.value)}
+                >
+                  {createQuantityOptions(tshirt.stock)}
+                </select>
+                
+                <button onClick={() => handleBuyClick(index)}>
+                  Buy
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
-const list = (tshirts) => {
-  return tshirts.map((tshirt, index) => {
-    return `<div class="tshirt-item">
-      <img src="${tshirt.image}" alt="${tshirt.title}" />
-      <h2>${tshirt.title}</h2>
-      <p class="price">$ ${tshirt.price.toFixed(2)}</p>
-      <p class="stock ${tshirt.stock === 0 ? 'out-of-stock' : ''}">
-        ${tshirt.stock === 0 ? 'Out of stock' : `${tshirt.stock} left!`}
-      </p>
-      ${tshirt.stock > 0 ? `
-        <div class="purchase-controls">
-          <select id="quantity-${index}" onchange="updateQuantity(${index}, this.value)">
-            ${createOptions(tshirt.stock)}
-          </select>
-          <button onclick="buyTshirt(${index})">Buy</button>
-        </div>
-      ` : ''}
-    </div>`;
-  }).join('');
-};
-
-const createOptions = (stock) => {
-  let options = '';
-  for (let i = 1; i <= stock; i++) {
-    options += `<option value="${i}">${i}</option>`;
-  }
-  return options;
-};
-
-const updateQuantity = (index, quantity) => {
-  tshirts[index].quantity = parseInt(quantity);
-};
-
-const buyTshirt = (index) => {
-  const tshirt = tshirts[index];
-  if (tshirt.stock >= tshirt.quantity) {
-    tshirt.stock -= tshirt.quantity;
-    tshirt.quantity = 1;
-    buildTshirts(tshirts);
-  }
-};
-
-document.addEventListener('DOMContentLoaded', function() {
-  buildTshirts(tshirts);
-});
+root.render(<App />);
